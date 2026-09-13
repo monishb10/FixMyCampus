@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+set -e
+MAVEN_VERSION=3.9.11
+BASE="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/.mvn/apache-maven-$MAVEN_VERSION"
+MVN="$BASE/bin/mvn"
+if [ ! -x "$MVN" ]; then
+  echo "Downloading Maven $MAVEN_VERSION once..."
+  TMP="/tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz"
+  curl -L "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$MAVEN_VERSION/apache-maven-$MAVEN_VERSION-bin.tar.gz" -o "$TMP"
+  mkdir -p "$(dirname "$BASE")"
+  tar -xzf "$TMP" -C "$(dirname "$BASE")"
+  rm -f "$TMP"
+fi
+exec "$MVN" "$@"
